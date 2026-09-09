@@ -1,0 +1,73 @@
+# Week 1: Cloud Operations Onboarding
+
+## HarborTech Ticket Summary
+Summarize ONB-2026-0001 and explain what HarborTech asked you to verify.
+
+#ONB-2026-001 - HarborTech asked me to verify how to use the envrioments and explaining envirmoent readiness. 
+
+## Client Impact
+Explain why environment readiness matters before an intern begins client support work.
+
+#Enviroment readiness matters because the intern needs to get familiar with the specific enviroments they're working on before they get to begn client support work. 
+
+## AWS Services Involved
+Identify the AWS Academy, Learner Lab, IAM, Region, account, and documentation concepts involved in the onboarding review.
+
+#AWS Academy is the platform where we have all of our modules and where we can access our Learner Lab enviroment, Learner Lab is the envirmoent that is in AWS Academy,
+when the enviroment is launched we are given a temporary account whilst we work insdie the enviroment, IAM is the authorization and authentication inside Learner Lab,
+region was launched in us-east-1, documentation in the LearnerLab is under the README tab. 
+
+## Virtualization Connection
+Explain how software-defined cloud infrastructure still depends on account, Region, permission, cost, and platform boundaries.
+
+#Software-defined cloud infrastructure still depends on those boundaries because of geographical position, radius limitations, and logical segregation so developers have
+dedicated testing areas. 
+
+## Evidence Reviewed
+Document the evidence you reviewed, such as:
+- AWS Academy access      #Able to access AWS Academy course.
+- Learner Lab access      #Able to access Learner Lab 
+- Permitted Region        #Permitted region is us-east-1 
+- IAM restrictions        #IAM creation is restricted
+- LabRole and LabInstanceProfile     #LabRole and LabInstanceProfile are understood 
+- Session behavior        #Session behavior is easily understanable 
+- Budget behavior         # Budget behavior understandable 
+- Reset behavior          #Reset behavior is understandable 
+- AWS documentation access     #Understand where to access AWS documentation
+- GitHub Playbook readiness    #GitHub Playbook ready 
+
+## Operational Analysis
+Explain what the evidence shows about your readiness to begin HarborTech support work.
+Separate verified findings from assumptions.
+
+#The evidence shows that readiness comes first before begininng client work. HarborTech explains how to access AWS Academy and LearnerLab. 
+
+## Recommendation
+State whether your environment is ready for Week 2 support work and identify any next step that is still required.
+
+#My enviroment is ready for Week 2 support work. 
+
+## Escalation Notes
+Document any unresolved access or environment issue that requires instructor assistance.
+If no escalation is required, state that clearly.
+
+#No escalation is required
+
+## Lessons Learned
+Explain what Week 1 taught you about cloud operations readiness, evidence, documentation, and operating within environment boundaries.
+
+#Week 1 taught me that making sure that you are ready in terms of making sure you get familiar with the enviroment, making sure you know what pieces of information can be evidence,
+and also giving you documentation examples to help your documentation. 
+
+## Professional Vocabulary
+Define the important Week 1 terms in your own words.
+Include terms such as:
+- Virtualization  #The abstraction of computing resources so software-defined compute,storage, and networking can be created and managed
+without direct control of the unerlying physical hardware.
+- Finding     #Piece of information discovered through investigation/research.
+- Assumption  #Statement accepted as true even though it lacks proof. 
+- Escalation  #Passing an issue to a person with the authority, expertise, or acces needed when the current role should not make the change alone.
+- Sandbox     #A controlled training enviroment with defined permissions, service limits, budget constraints, and operating boundaries. 
+- Region      #Specific geographic area. 
+- IAM  # Identity and Access Manaegment, framework of security policies and technologies that ensures the right users have the appropriate access.
+- Operations Playbook #A structured professional record of tickets, evidence, analysis, reccomendations, escalation decisions, lessons learned, and technical vocabulary. 
