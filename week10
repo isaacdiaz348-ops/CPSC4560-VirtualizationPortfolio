@@ -1,0 +1,108 @@
+1. Ticket Summary & Business Context
+
+Client: Bright Path
+
+Objective: Address an outdated 19-day EBS snapshot gap (violating a 24-hour RPO), provision concurrent Linux file sharing, design object storage for incoming document uploads, and implement a strict 7-year immutable retention mandate for completed archival records.
+
+Governance Notice: No production changes are authorized under ticket TKT-2026-0010. All configurations and commands represent engineering recommendations and non-destructive practice lab tasks.
+
+2. AWS Environment & Active Identifiers
+
+Region: us-east-1
+
+Target EBS Volume: vol-040ae35afe37e4434
+
+Test EBS Snapshot: snap-08a37b5567c0dfcc6
+
+Practice S3 Bucket: it4560-week10-iadiaz
+
+Sample Test File: week10-sample.txt
+
+3. Relevant Commands & Sanitized Results
+
+Amazon EBS Volume Inspection & Baseline Snapshot
+
+Bash
+# Inspect existing EBS volume status and metadata
+aws ec2 describe-volumes --volume-ids vol-040ae35afe37e4434 --region us-east-1
+
+# Create an ad-hoc snapshot to establish a baseline backup
+aws ec2 create-snapshot --volume-id vol-040ae35afe37e4434 --description "IT4560 Manual Snapshot" --region us-east-1
+
+# Verify snapshot progress and state
+aws ec2 describe-snapshots --snapshot-ids snap-08a37b5567c0dfcc6 --region us-east-1
+S3 Bucket Provisioning & Object Upload
+
+Bash
+# Provision disposable practice S3 bucket
+aws s3api create-bucket --bucket it4560-week10-iadiaz --region us-east-1
+
+# Upload local test file to S3
+aws s3 cp week10-sample.txt s3://it4560-week10-iadiaz/week10-sample.txt --region us-east-1
+
+# Audit object metadata and ETag integrity
+aws s3api head-object --bucket it4560-week10-iadiaz --key week10-sample.txt --region us-east-1
+S3 Versioning & Lifecycle Configuration
+
+Bash
+# Enable versioning on the practice bucket
+aws s3api put-bucket-versioning --bucket it4560-week10-iadiaz --versioning-configuration Status=Enabled --region us-east-1
+
+# Apply practice lifecycle transition policy
+aws s3api put-bucket-lifecycle-configuration --bucket it4560-week10-iadiaz --lifecycle-configuration file://lifecycle-rule.json --region us-east-1
+4. Findings Across Operational Sections
+
+Application Disk Requirements: The existing 19-day snapshot gap exposed Bright Path to catastrophic data loss, failing their 24-hour RPO. Automated Amazon Data Lifecycle Manager (DLM) policies paired with gp3 volumes resolve this gap.
+
+Shared Working Files: Traditional block storage cannot handle concurrent multi-server access. Amazon EFS provides the necessary POSIX-compliant, multi-instance read/write file sharing.
+
+Document Ingestion: Amazon S3 Standard offers scalable object storage with robust HTTP REST API access for incoming documents.
+
+Archival Retention: Storing records in Amazon S3 Glacier combined with S3 Object Lock (Compliance Mode) fulfills the strict 7-year immutable retention mandate without risk of premature deletion.
+
+Recovery Verification: Automated snapshots and lifecycle rules must be audited regularly via CLI inspection (describe-snapshots, head-object) to ensure compliance.
+
+Access Patterns & Cost Optimization: Transitioning inactive files to EFS Infrequent Access (IA) and S3 Glacier reduces long-term storage expenditures.
+
+Resource Hygiene: Purging temporary test artifacts prevents resource drift, accidental cost accumulation, and dormant security vulnerabilities.
+
+5. Storage Recommendation Matrix
+
+Data Category	Recommended Storage Model	Primary Access Pattern	Recovery & Retention Strategy
+Application Disk	Amazon EBS (Block)	Low-latency, direct block access	Daily automated EBS snapshots via AWS DLM (24-hr RPO)
+Shared Working Files	Amazon EFS (File)	Concurrent POSIX-compliant file access across multiple hosts	Continuous multi-AZ replication & automated lifecycle tiering
+Uploaded Documents	Amazon S3 Standard (Object)	Direct REST API calls (GET, PUT) via flat namespace	Versioning enabled to protect against accidental overwrites
+Seven-Year Records	Amazon S3 Glacier (Object)	Infrequent/archival access with regulatory audit requirements	S3 Object Lock (Compliance Mode) for a strict 7-year retention period
+6. Recovery and Retention Verification
+
+RPO Compliance: Automated DLM schedules must be verified daily to ensure snapshots complete within the 24-hour window.
+
+Immutable Compliance Lock: S3 Object Lock in Compliance Mode prevents even root administrators from shortening or deleting retention periods, safeguarding records against tampering. Legal and compliance sign-off is mandatory before deployment.
+
+7. Cleanup Evidence & Execution
+
+S3 Null-Version Object Removal & Bucket Deletion
+
+Bash
+# Inspect object versions (revealed null version for unversioned upload)
+aws s3api list-object-versions --bucket it4560-week10-iadiaz --region us-east-1
+
+# Delete the null-version object
+aws s3api delete-object --bucket it4560-week10-iadiaz --key week10-sample.txt --version-id null --region us-east-1
+
+# Delete the empty practice bucket
+aws s3api delete-bucket --bucket it4560-week10-iadiaz --region us-east-1
+EBS Snapshot Removal
+
+Bash
+# Delete the practice EBS snapshot
+aws ec2 delete-snapshot --snapshot-id snap-08a37b5567c0dfcc6 --region us-east-1
+
+# Verify removal
+aws ec2 describe-snapshots --snapshot-ids snap-08a37b5567c0dfcc6 --region us-east-1
+# Expected Result: InvalidSnapshot.NotFound error confirming successful purge.
+8. Escalation Notes & Lessons Learned
+
+Escalation Boundary: No production changes were executed. Applying immutable S3 Object Lock policies requires formal Architecture Review Board (ARB), Change Advisory Board (CAB), and legal approvals.
+
+Lessons Learned: When managing versioned S3 buckets, unversioned legacy objects store under a "VersionId": "null" attribute and must be explicitly targeted prior to bucket deletion. Verifying cloud resource hygiene prevents unnecessary recurring charges and eliminates residual security risks.
